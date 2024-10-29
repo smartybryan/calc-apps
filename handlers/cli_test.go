@@ -11,19 +11,19 @@ import (
 func TestHandler_TwoArgsRequired(t *testing.T) {
 	handler := NewCLIHandler(nil, nil)
 	err := handler.Handle(nil)
-	assertError(t, err, ErrWrongArgCount)
+	assertError(t, err, errWrongArgCount)
 }
 
 func TestHandler_FirstArgInvalid(t *testing.T) {
 	handler := NewCLIHandler(nil, nil)
 	err := handler.Handle([]string{"INVALID", "42"})
-	assertError(t, err, ErrInvalidArgument)
+	assertError(t, err, errInvalidArgument)
 }
 
 func TestHandler_SecondArgInvalid(t *testing.T) {
 	handler := NewCLIHandler(nil, nil)
 	err := handler.Handle([]string{"42", "INVALID"})
-	assertError(t, err, ErrInvalidArgument)
+	assertError(t, err, errInvalidArgument)
 }
 
 func TestHandler_ResultWrittenToOutput(t *testing.T) {
@@ -41,7 +41,7 @@ func TestHandler_OutputWriterError(t *testing.T) {
 	stdout := &ErringWriter{boink}
 	handler := NewCLIHandler(stdout, &calc.Addition{})
 	err := handler.Handle([]string{"2", "3"})
-	assertError(t, err, ErrOutputFailure, boink)
+	assertError(t, err, errOutputFailure, boink)
 }
 
 /////////////////////////////////////////////////////////

@@ -22,27 +22,27 @@ func NewCLIHandler(stdout io.Writer, calculator Calculator) *CLIHandler {
 
 func (this *CLIHandler) Handle(args []string) error {
 	if len(args) != 2 {
-		return ErrWrongArgCount
+		return errWrongArgCount
 	}
 
 	a, err := strconv.Atoi(args[0])
 	if err != nil {
-		return fmt.Errorf("%w: '%s'", ErrInvalidArgument, args[0])
+		return fmt.Errorf("%w: '%s'", errInvalidArgument, args[0])
 	}
 	b, err := strconv.Atoi(args[1])
 	if err != nil {
-		return fmt.Errorf("%w: '%s'", ErrInvalidArgument, args[1])
+		return fmt.Errorf("%w: '%s'", errInvalidArgument, args[1])
 	}
 	result := this.calculator.Calculate(a, b)
 	_, err = fmt.Fprint(this.stdout, result)
 	if err != nil {
-		return fmt.Errorf("%w: %w", ErrOutputFailure, err)
+		return fmt.Errorf("%w: %w", errOutputFailure, err)
 	}
 	return nil
 }
 
 var (
-	ErrWrongArgCount   = errors.New("usage: calculator <a> <b>")
-	ErrInvalidArgument = errors.New("invalid syntax")
-	ErrOutputFailure   = errors.New("output failure")
+	errWrongArgCount   = errors.New("usage: calculator <a> <b>")
+	errInvalidArgument = errors.New("invalid syntax")
+	errOutputFailure   = errors.New("output failure")
 )
