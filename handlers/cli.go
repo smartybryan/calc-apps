@@ -46,7 +46,7 @@ func (this *CLIHandler) Handle(args []string) error {
 }
 
 var (
-	errWrongArgCount        = errors.New("usage: calculator <a> <b>")
+	errWrongArgCount        = errors.New("usage: calculator [-op] <a> <b>")
 	errInvalidArgument      = errors.New("invalid syntax")
 	errOutputFailure        = errors.New("output failure")
 	errUnsupportedOperation = errors.New("unsupported operation")
