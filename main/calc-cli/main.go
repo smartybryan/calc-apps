@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"os"
 
 	"github.com/smartybryan/calc-apps/handlers"
@@ -8,9 +9,20 @@ import (
 )
 
 func main() {
-	handler := handlers.NewCLIHandler(os.Stdout, &calc.Addition{})
-	err := handler.Handle(os.Args[1:])
+	var op string
+	flag.StringVar(&op, "op", "+", "Enter operation: +,-,*,/")
+	flag.Parse()
+
+	handler := handlers.NewCLIHandler(os.Stdout, calculators[op])
+	err := handler.Handle(flag.Args())
 	if err != nil {
 		panic(err)
 	}
+}
+
+var calculators = map[string]handlers.Calculator{
+	"+": &calc.Addition{},
+	"-": &calc.Subtraction{},
+	"*": &calc.Multiplication{},
+	"/": &calc.Division{},
 }
