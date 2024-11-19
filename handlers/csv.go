@@ -24,11 +24,18 @@ func NewCSVHandler(logger *log.Logger, input io.Reader, output io.Writer, calcul
 	}
 }
 
-func (this *CSVHandler) Handle() error {
+func (this *CSVHandler) Handle() (err error) {
 	this.input.FieldsPerRecord = 3
-	defer this.output.Flush()
+	defer func() {
+		this.output.Flush()
+		if err == nil {
+			err = this.output.Error()
+		}
+	}()
+
+	var record []string
 	for {
-		record, err := this.input.Read()
+		record, err = this.input.Read()
 		if err == io.EOF {
 			break
 		}
@@ -36,13 +43,17 @@ func (this *CSVHandler) Handle() error {
 			this.logger.Println("invalid number of fields", len(record))
 			continue
 		}
+		if err != nil {
+			return err
+		}
 		a, err := strconv.Atoi(record[0])
 		if err != nil {
 			this.logger.Println("invalid arg", record[0])
 			continue
 		}
 		op := record[1]
-		b, err := strconv.Atoi(record[2])
+		var b int
+		b, err = strconv.Atoi(record[2])
 		if err != nil {
 			this.logger.Println("invalid arg", record[2])
 			continue
@@ -53,8 +64,10 @@ func (this *CSVHandler) Handle() error {
 			continue
 		}
 		c := calculator.Calculate(a, b)
-		_ = this.output.Write(append(record, strconv.Itoa(c)))
-		//TODO: if err != nil
+		err = this.output.Write(append(record, strconv.Itoa(c)))
+		if err != nil {
+			break
+		}
 	}
 
 	return this.output.Error()
